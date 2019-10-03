@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ StreamTeam
+  ~ Copyright (C) 2019  University of Basel
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<!-- Based on an old version (January 2017) of the log4j.xml file from the hello-samza github project published under the Apache License (see https://github.com/apache/samza-hello-samza/blob/51253ee28e300ef458bdd2effb00224273988f9e/src/main/resources/log4j.xml) and on the Apache Samza logging documentation (see https://samza.apache.org/learn/documentation/0.13/jobs/logging.html) -->
+
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+    <appender name="jmx" class="org.apache.samza.logging.log4j.JmxAppender"/>
+
+    <appender name="RollingAppender" class="org.apache.log4j.RollingFileAppender">
+        <param name="File" value="${samza.log.dir}/${samza.container.name}.log"/>
+        <param name="MaxFileSize" value="256MB"/>
+        <param name="MaxBackupIndex" value="20"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} [%p] %m%n"/>
+        </layout>
+    </appender>
+    <appender name="StartupAppender" class="org.apache.log4j.RollingFileAppender">
+        <param name="File" value="${samza.log.dir}/${samza.container.name}-startup.log"/>
+        <param name="MaxFileSize" value="256MB"/>
+        <param name="MaxBackupIndex" value="1"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} [%p] %m%n"/>
+        </layout>
+    </appender>
+    <root>
+        <priority value="info"/>
+        <appender-ref ref="RollingAppender"/>
+        <appender-ref ref="jmx"/>
+    </root>
+    <logger name="STARTUP_LOGGER" additivity="false">
+        <level value="info"/>
+        <appender-ref ref="StartupAppender"/>
+    </logger>
+
+</log4j:configuration>
