@@ -41,7 +41,6 @@ import ch.unibas.dmi.dbis.streamTeam.tasks.AbstractTask;
 import org.apache.samza.config.Config;
 import org.apache.samza.config.ConfigException;
 import org.apache.samza.storage.kv.KeyValueStore;
-import org.apache.samza.task.TaskContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,17 +62,17 @@ public class DistanceAndSpeedAnalysisTask extends AbstractTask {
     private final static Logger logger = LoggerFactory.getLogger(DistanceAndSpeedAnalysisTask.class);
 
     /**
-     * Initializes DistanceAndSpeedAnalysisTask.
+     * Creates state abstractions and module graphs for DistanceAndSpeedAnalysisTask.
      *
-     * @param config      Config
-     * @param taskContext TaskContext
+     * @param config  Config
+     * @param kvStore Samza key-value store for storing the state
      */
     @Override
-    public void init(Config config, TaskContext taskContext) {
-        logger.info("Initialize DistanceAndSpeedAnalysisTask");
+    public void createStateAbstractionsAndModuleGraphs(Config config, KeyValueStore<String, Serializable> kvStore) {
+        logger.info("Creating state abstractions and module graphs for DistanceAndSpeedAnalysisTask");
         try {
             /*======================================================
-            === Read Parameters from config file                 ===
+            === Read parameters from config file                 ===
             ======================================================*/
             int activeTimeThreshold = config.getInt("streamTeam.activeTimeThreshold");
             String ballIdentifier = getString(config, "streamTeam.ball");
@@ -100,10 +99,8 @@ public class DistanceAndSpeedAnalysisTask extends AbstractTask {
             int dribblingTimeThreshold = config.getInt("streamTeam.distanceAndSpeedAnalysis.dribblingTimeThreshold");
 
             /*======================================================
-            === Create Stores                                    ===
+            === Create state abstractions                        ===
             ======================================================*/
-            KeyValueStore<String, Serializable> kvStore = (KeyValueStore<String, Serializable>) taskContext.getStore("kvStore");
-
             SingleValueStore<Long> currentFieldObjectStateTsStore = new SingleValueStore<>(kvStore, "currentFieldObjectStateTs", new Schema("arrayValue{objectIdentifiers,0,false}"));
             SingleValueStore<Geometry.Vector> currentPositionStore = new SingleValueStore<>(kvStore, "currentPosition", new Schema("arrayValue{objectIdentifiers,0,false}"));
 

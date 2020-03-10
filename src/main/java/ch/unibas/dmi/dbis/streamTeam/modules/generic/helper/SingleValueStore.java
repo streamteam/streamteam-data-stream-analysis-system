@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 import java.io.Serializable;
 
 /**
- * Data structure for storing a single value.
+ * State abstraction for storing a single value.
  * Separated per data stream element key (e.g., matchId).
  * Separated per inner key that can deduced from a data stream element by applying a schema (innerKeySchema) (e.g., first object identifier).
  */

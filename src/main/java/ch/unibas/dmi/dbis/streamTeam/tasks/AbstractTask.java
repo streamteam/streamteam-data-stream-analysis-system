@@ -19,11 +19,13 @@
 package ch.unibas.dmi.dbis.streamTeam.tasks;
 
 import ch.unibas.dmi.dbis.streamTeam.dataStreamElements.AbstractImmutableDataStreamElement;
+import ch.unibas.dmi.dbis.streamTeam.dataStreamElements.football.FieldObjectStateStreamElement;
 import ch.unibas.dmi.dbis.streamTeam.modules.SingleElementProcessorGraph;
 import ch.unibas.dmi.dbis.streamTeam.modules.WindowProcessorGraph;
 import ch.unibas.dmi.dbis.streamTeam.samzaExtensions.KafkaMessageWithLogAppendTimestamp;
 import org.apache.samza.config.Config;
 import org.apache.samza.config.ConfigException;
+import org.apache.samza.storage.kv.KeyValueStore;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.system.OutgoingMessageEnvelope;
 import org.apache.samza.system.SystemStream;
@@ -31,6 +33,7 @@ import org.apache.samza.task.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -44,6 +47,11 @@ public abstract class AbstractTask implements StreamTask, InitableTask, Windowab
     private final static Logger logger = LoggerFactory.getLogger(AbstractTask.class);
 
     /**
+     * Flag which specifies if some processing timestamps are logged for evaluating the processing timestamp variance
+     */
+    private boolean logProcessingTimestamps;
+
+    /**
      * Graph for processing every input data stream element
      */
     protected SingleElementProcessorGraph singleElementProcessorGraph;
@@ -55,20 +63,34 @@ public abstract class AbstractTask implements StreamTask, InitableTask, Windowab
 
     /**
      * Initializes the StreamTeam worker.
-     * This method has to:
-     * <ul>
-     * <li>read the parameters from the config</li>
-     * <li>initialize single value and history stores</li>
-     * <li>create the modules</li>
-     * <li>create the single element processor graph</li>
-     * <li>create the window processor graph</li>
-     * </ul>
      *
      * @param config      Config
      * @param taskContext TaskContext
      */
     @Override
-    public abstract void init(Config config, TaskContext taskContext) throws Exception;
+    public final void init(Config config, TaskContext taskContext) {
+        this.logProcessingTimestamps = config.getBoolean("streamTeam.logProcessingTimestamps");
+
+        KeyValueStore<String, Serializable> kvStore = (KeyValueStore<String, Serializable>) taskContext.getStore("kvStore");
+
+        this.createStateAbstractionsAndModuleGraphs(config, kvStore);
+    }
+
+    /**
+     * Creates the state abstractions and the module graphs of the StreamTeam worker.
+     * This method has to:
+     * <ul>
+     * <li>read the required parameters from the config</li>
+     * <li>create the state abstractions (i.e., single value stores and history stores)</li>
+     * <li>create the modules</li>
+     * <li>create the single element processor graph</li>
+     * <li>create the window processor graph</li>
+     * </ul>
+     *
+     * @param config  Config
+     * @param kvStore Samza key-value store for storing the state
+     */
+    public abstract void createStateAbstractionsAndModuleGraphs(Config config, KeyValueStore<String, Serializable> kvStore);
 
     /**
      * Processes a received input data stream element in the single element processor graph.
@@ -94,6 +116,10 @@ public abstract class AbstractTask implements StreamTask, InitableTask, Windowab
                 if (!inputDataStreamElement.getStreamName().equals(incomingMessageEnvelope.getSystemStreamPartition().getSystemStream().getStream())) {
                     logger.error("Cannot process element ({}) since the stream name the data model assigns to the input stream element does not match the name of the Kafka topic via which it was received ({}).", inputDataStreamElement, incomingMessageEnvelope.getSystemStreamPartition().getSystemStream().getStream());
                 } else {
+                    if (this.logProcessingTimestamps) {
+                        logProcessingTimestamp(inputDataStreamElement);
+                    }
+
                     List<AbstractImmutableDataStreamElement> outputDataStreamElements = this.singleElementProcessorGraph.processElement(inputDataStreamElement);
 
                     for (AbstractImmutableDataStreamElement outputDataStreamElement : outputDataStreamElements) {
@@ -158,6 +184,27 @@ public abstract class AbstractTask implements StreamTask, InitableTask, Windowab
         } else {
             SystemStream outputStream = new SystemStream("kafka", outputDataStreamElement.getStreamName());
             messageCollector.send(new OutgoingMessageEnvelope(outputStream, outputDataStreamElement.getKey(), outputDataStreamElement.getContentAsByteArray()));
+        }
+    }
+
+    /**
+     * Logs the processing timestamp of the input data stream element if it is a field object state stream element for the ball.
+     *
+     * @param inputDataStreamElement Input data stream element
+     */
+    private final void logProcessingTimestamp(AbstractImmutableDataStreamElement inputDataStreamElement) {
+        if (inputDataStreamElement.getStreamName().equals(FieldObjectStateStreamElement.STREAMNAME)) {
+            try {
+                if (inputDataStreamElement.getObjectIdentifier(0).equals("BALL")) {
+                    try {
+                        logger.info("\nProcessingTimestampOfTheFieldObjectStateStreamElementForTheBall {} {} {} ", new Object[]{inputDataStreamElement.getKey(), inputDataStreamElement.getGenerationTimestamp(), inputDataStreamElement.getProcessingTimestamp()});
+                    } catch (AbstractImmutableDataStreamElement.CannotRetrieveInformationException e) {
+                        logger.error("Logging the processing timestamp of the field object state stream element for the ball failed since the processing timestamp cannot be retrieved. (This should never happen!)");
+                    }
+                }
+            } catch (AbstractImmutableDataStreamElement.CannotRetrieveInformationException e) {
+                logger.error("Logging the processing timestamp of the field object state stream element (for the ball) failed since the object identier cannot be retrieved. (This should never happen!)");
+            }
         }
     }
 }

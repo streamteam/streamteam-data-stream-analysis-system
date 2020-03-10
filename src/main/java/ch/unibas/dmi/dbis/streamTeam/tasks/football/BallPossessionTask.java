@@ -39,7 +39,6 @@ import ch.unibas.dmi.dbis.streamTeam.tasks.AbstractTask;
 import org.apache.samza.config.Config;
 import org.apache.samza.config.ConfigException;
 import org.apache.samza.storage.kv.KeyValueStore;
-import org.apache.samza.task.TaskContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,17 +60,17 @@ public class BallPossessionTask extends AbstractTask {
     private final static Logger logger = LoggerFactory.getLogger(BallPossessionTask.class);
 
     /**
-     * Initializes BallPossessionTask.
+     * Creates state abstractions and module graphs for BallPossessionTask.
      *
-     * @param config      Config
-     * @param taskContext TaskContext
+     * @param config  Config
+     * @param kvStore Samza key-value store for storing the state
      */
     @Override
-    public void init(Config config, TaskContext taskContext) {
-        logger.info("Initialize BallPossessionTask");
+    public void createStateAbstractionsAndModuleGraphs(Config config, KeyValueStore<String, Serializable> kvStore) {
+        logger.info("Creating state abstractions and module graphs for BallPossessionTask");
         try {
             /*======================================================
-            === Read Parameters from config file                 ===
+            === Read parameters from config file                 ===
             ======================================================*/
             int activeTimeThreshold = config.getInt("streamTeam.activeTimeThreshold");
             double minVabsDiff = config.getDouble("streamTeam.ballPossession.minVabsDiff");
@@ -99,10 +98,8 @@ public class BallPossessionTask extends AbstractTask {
             ObjectInfo ball = ObjectInfoFactoryAndModifier.createObjectInfoFromBallDefinitionString(ballDefinition);
 
             /*======================================================
-            === Create Stores                                    ===
+            === Create state abstractions                        ===
             ======================================================*/
-            KeyValueStore<String, Serializable> kvStore = (KeyValueStore<String, Serializable>) taskContext.getStore("kvStore");
-
             SingleValueStore<String> leftTeamIdStore = new SingleValueStore<>(kvStore, "leftTeamId", Schema.STATIC_INNER_KEY_SCHEMA);
 
             SingleValueStore<Boolean> currentlyBallInFieldStore = new SingleValueStore<>(kvStore, "currentlyBallInField", Schema.STATIC_INNER_KEY_SCHEMA);

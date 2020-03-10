@@ -25,7 +25,7 @@
     <groupId>ch.unibas.dmi.dbis</groupId>
     <artifactId>streamteam-data-stream-analysis-system</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 
     <name>StreamTeam - Data Stream Analysis System</name>
     <url>https://dbis.dmi.unibas.ch/research/projects/streamTeam/</url>
@@ -173,7 +173,7 @@
         <dependency>
             <groupId>ch.unibas.dmi.dbis</groupId>
             <artifactId>streamteam-data-model</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1</version>
         </dependency>
     </dependencies>
 

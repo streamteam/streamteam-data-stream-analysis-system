@@ -30,7 +30,6 @@ import ch.unibas.dmi.dbis.streamTeam.tasks.AbstractTask;
 import org.apache.samza.config.Config;
 import org.apache.samza.config.ConfigException;
 import org.apache.samza.storage.kv.KeyValueStore;
-import org.apache.samza.task.TaskContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,25 +49,23 @@ public class AreaDetectionTask extends AbstractTask {
     private final static Logger logger = LoggerFactory.getLogger(AreaDetectionTask.class);
 
     /**
-     * Initializes AreaDetectionTask.
+     * Creates state abstractions and module graphs for AreaDetectionTask.
      *
-     * @param config      Config
-     * @param taskContext TaskContext
+     * @param config  Config
+     * @param kvStore Samza key-value store for storing the state
      */
     @Override
-    public void init(Config config, TaskContext taskContext) {
-        logger.info("Initialize AreaDetectionTask");
+    public void createStateAbstractionsAndModuleGraphs(Config config, KeyValueStore<String, Serializable> kvStore) {
+        logger.info("Creating state abstractions and module graphs for AreaDetectionTask");
         try {
             /*======================================================
-            === Read Parameters from config file                 ===
+            === Read parameters from config file                 ===
             ======================================================*/
             // no parameters to read
 
             /*======================================================
-            === Create Stores                                    ===
+            === Create state abstractions                        ===
             ======================================================*/
-            KeyValueStore<String, Serializable> kvStore = (KeyValueStore<String, Serializable>) taskContext.getStore("kvStore");
-
             SingleValueStore<String> areaInfosStore = new SingleValueStore<>(kvStore, "areaInfos", Schema.STATIC_INNER_KEY_SCHEMA);
 
             SingleValueStore<Boolean> currentlyInAreaStore = new SingleValueStore<>(kvStore, "currentlyInArea", Schema.NO_INNER_KEY_SCHEMA);

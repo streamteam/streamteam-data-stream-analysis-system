@@ -33,7 +33,6 @@ import ch.unibas.dmi.dbis.streamTeam.tasks.AbstractTask;
 import org.apache.samza.config.Config;
 import org.apache.samza.config.ConfigException;
 import org.apache.samza.storage.kv.KeyValueStore;
-import org.apache.samza.task.TaskContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,17 +52,17 @@ public class KickoffDetectionTask extends AbstractTask {
     private final static Logger logger = LoggerFactory.getLogger(KickoffDetectionTask.class);
 
     /**
-     * Initializes KickoffDetectionTask.
+     * Creates state abstractions and module graphs for KickoffDetectionTask.
      *
-     * @param config      Config
-     * @param taskContext TaskContext
+     * @param config  Config
+     * @param kvStore Samza key-value store for storing the state
      */
     @Override
-    public void init(Config config, TaskContext taskContext) {
-        logger.info("Initialize KickoffDetectionTask");
+    public void createStateAbstractionsAndModuleGraphs(Config config, KeyValueStore<String, Serializable> kvStore) {
+        logger.info("Creating state abstractions and module graphs for KickoffDetectionTask");
         try {
             /*======================================================
-            === Read Parameters from config file                 ===
+            === Read parameters from config file                 ===
             ======================================================*/
             double maxPlayerMidpointDist = config.getDouble("streamTeam.kickoffDetection.maxPlayerMidpointDist");
             double maxBallMidpointDist = config.getDouble("streamTeam.kickoffDetection.maxBallMidpointDist");
@@ -89,13 +88,11 @@ public class KickoffDetectionTask extends AbstractTask {
             ObjectInfo ball = ObjectInfoFactoryAndModifier.createObjectInfoFromBallDefinitionString(ballDefinition);
 
             /*======================================================
-            === Create Stores                                    ===
+            === Create state abstractions                        ===
             ======================================================*/
-            KeyValueStore<String, Serializable> kvStore = (KeyValueStore<String, Serializable>) taskContext.getStore("kvStore");
-
             SingleValueStore<Geometry.Vector> positionStore = new SingleValueStore<>(kvStore, "position", new Schema("arrayValue{objectIdentifiers,0,false}"));
 
-            SingleValueStore<Long> kickoffTsStore = new SingleValueStore<Long>(kvStore, "kickoffTs", Schema.STATIC_INNER_KEY_SCHEMA);
+            SingleValueStore<Long> kickoffTsStore = new SingleValueStore<>(kvStore, "kickoffTs", Schema.STATIC_INNER_KEY_SCHEMA);
 
             /*======================================================
             === Create modules                                   ===

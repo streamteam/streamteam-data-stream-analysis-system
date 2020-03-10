@@ -32,7 +32,6 @@ import ch.unibas.dmi.dbis.streamTeam.tasks.AbstractTask;
 import org.apache.samza.config.Config;
 import org.apache.samza.config.ConfigException;
 import org.apache.samza.storage.kv.KeyValueStore;
-import org.apache.samza.task.TaskContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,17 +54,17 @@ public class PassCombinationDetectionTask extends AbstractTask {
 
 
     /**
-     * Initializes PassCombinationDetectionTask.
+     * Creates state abstractions and module graphs for PassCombinationDetectionTask.
      *
-     * @param config      Config
-     * @param taskContext TaskContext
+     * @param config  Config
+     * @param kvStore Samza key-value store for storing the state
      */
     @Override
-    public void init(Config config, TaskContext taskContext) {
-        logger.info("Initialize PassCombinationDetectionTask");
+    public void createStateAbstractionsAndModuleGraphs(Config config, KeyValueStore<String, Serializable> kvStore) {
+        logger.info("Creating state abstractions and module graphs for PassCombinationDetectionTask");
         try {
             /*======================================================
-            === Read Parameters from config file                 ===
+            === Read parameters from config file                 ===
             ======================================================*/
             int successfulPassEventHistoryLength = config.getInt("streamTeam.passCombinationDetection.successfulPassEventHistoryLength");
             long maxTimeBetweenPasses = config.getInt("streamTeam.passCombinationDetection.maxTimeBetweenPasses");
@@ -84,10 +83,8 @@ public class PassCombinationDetectionTask extends AbstractTask {
             }
 
             /*======================================================
-            === Create Stores                                    ===
+            === Create state abstractions                        ===
             ======================================================*/
-            KeyValueStore<String, Serializable> kvStore = (KeyValueStore<String, Serializable>) taskContext.getStore("kvStore");
-
             HistoryStore<Long> successfulPassTsHistoryStore = new HistoryStore<>(kvStore, "successfulPassTs", Schema.STATIC_INNER_KEY_SCHEMA, successfulPassEventHistoryLength);
             HistoryStore<String> successfulPassTeamIdHistoryStore = new HistoryStore<>(kvStore, "successfulPassTeamId", Schema.STATIC_INNER_KEY_SCHEMA, successfulPassEventHistoryLength);
             HistoryStore<String> successfulPassKickPlayerIdHistoryStore = new HistoryStore<>(kvStore, "successfulPassKickPlayerId", Schema.STATIC_INNER_KEY_SCHEMA, successfulPassEventHistoryLength);

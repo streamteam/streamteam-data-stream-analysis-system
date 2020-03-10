@@ -32,7 +32,6 @@ import ch.unibas.dmi.dbis.streamTeam.tasks.AbstractTask;
 import org.apache.samza.config.Config;
 import org.apache.samza.config.ConfigException;
 import org.apache.samza.storage.kv.KeyValueStore;
-import org.apache.samza.task.TaskContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,26 +51,24 @@ public class FieldObjectStateGenerationTask extends AbstractTask {
     private final static Logger logger = LoggerFactory.getLogger(FieldObjectStateGenerationTask.class);
 
     /**
-     * Initializes FieldObjectStateGenerationTask.
+     * Creates state abstractions and module graphs for FieldObjectStateGenerationTask.
      *
-     * @param config      Config
-     * @param taskContext TaskContext
+     * @param config  Config
+     * @param kvStore Samza key-value store for storing the state
      */
     @Override
-    public void init(Config config, TaskContext taskContext) {
-        logger.info("Initialize FieldObjectStateGenerationTask");
+    public void createStateAbstractionsAndModuleGraphs(Config config, KeyValueStore<String, Serializable> kvStore) {
+        logger.info("Creating state abstractions and module graphs for FieldObjectStateGenerationTask");
         try {
             /*======================================================
-            === Read Parameters from config file                 ===
+            === Read parameters from config file                 ===
             ======================================================*/
             double positionScalingFactor = config.getDouble("streamTeam.fieldObjectStateGeneration.positionScalingFactor");
             double velocityScalingFactor = config.getDouble("streamTeam.fieldObjectStateGeneration.velocityScalingFactor");
 
             /*======================================================
-            === Create Stores                                    ===
+            === Create state abstractions                        ===
             ======================================================*/
-            KeyValueStore<String, Serializable> kvStore = (KeyValueStore<String, Serializable>) taskContext.getStore("kvStore");
-
             HistoryStore<Long> tsHistoryStore = new HistoryStore<>(kvStore, "ts", new Schema("arrayValue{objectIdentifiers,0,false}"), 2);
             HistoryStore<Geometry.Vector> positionHistoryStore = new HistoryStore<>(kvStore, "position", new Schema("arrayValue{objectIdentifiers,0,false}"), 2);
 

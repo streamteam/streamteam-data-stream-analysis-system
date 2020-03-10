@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Data structure for storing a history of values with a fixed length.
+ * State abstraction for storing a history of values with a fixed length.
  * Separated per data stream element key (e.g., matchId).
  * Separated per inner key that can deduced from a data stream element by applying a schema (innerKeySchema) (e.g., first object identifier)..
  */

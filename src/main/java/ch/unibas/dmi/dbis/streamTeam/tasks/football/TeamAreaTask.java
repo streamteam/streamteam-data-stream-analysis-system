@@ -32,7 +32,6 @@ import ch.unibas.dmi.dbis.streamTeam.tasks.AbstractTask;
 import org.apache.samza.config.Config;
 import org.apache.samza.config.ConfigException;
 import org.apache.samza.storage.kv.KeyValueStore;
-import org.apache.samza.task.TaskContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,17 +51,17 @@ public class TeamAreaTask extends AbstractTask {
     private final static Logger logger = LoggerFactory.getLogger(TeamAreaTask.class);
 
     /**
-     * Initializes TeamAreaTask.
+     * Creates state abstractions and module graphs for TeamAreaTask.
      *
-     * @param config      Config
-     * @param taskContext TaskContext
+     * @param config  Config
+     * @param kvStore Samza key-value store for storing the state
      */
     @Override
-    public void init(Config config, TaskContext taskContext) {
-        logger.info("Initialize TeamAreaTask");
+    public void createStateAbstractionsAndModuleGraphs(Config config, KeyValueStore<String, Serializable> kvStore) {
+        logger.info("Creating state abstractions and module graphs for TeamAreaTask");
         try {
             /*======================================================
-            === Read Parameters from config file                 ===
+            === Read parameters from config file                 ===
             ======================================================*/
             String ballIdentifier = getString(config, "streamTeam.ball");
 
@@ -73,10 +72,8 @@ public class TeamAreaTask extends AbstractTask {
             }
 
             /*======================================================
-            === Create Stores                                    ===
+            === Create state abstractions                        ===
             ======================================================*/
-            KeyValueStore<String, Serializable> kvStore = (KeyValueStore<String, Serializable>) taskContext.getStore("kvStore");
-
             SingleValueStore<Long> fieldObjectStateTsStore = new SingleValueStore<>(kvStore, "fieldObjectStateTsStore", new Schema("arrayValue{objectIdentifiers,0,false}"));
             SingleValueStore<Geometry.Vector> positionStore = new SingleValueStore<>(kvStore, "position", new Schema("arrayValue{objectIdentifiers,0,false}"));
 

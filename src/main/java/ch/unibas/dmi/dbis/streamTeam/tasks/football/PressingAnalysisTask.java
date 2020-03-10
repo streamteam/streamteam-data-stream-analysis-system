@@ -38,7 +38,6 @@ import ch.unibas.dmi.dbis.streamTeam.tasks.AbstractTask;
 import org.apache.samza.config.Config;
 import org.apache.samza.config.ConfigException;
 import org.apache.samza.storage.kv.KeyValueStore;
-import org.apache.samza.task.TaskContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,17 +59,17 @@ public class PressingAnalysisTask extends AbstractTask {
     private final static Logger logger = LoggerFactory.getLogger(PressingAnalysisTask.class);
 
     /**
-     * Initializes PressingAnalysisTask.
+     * Creates state abstractions and module graphs for PressingAnalysisTask.
      *
-     * @param config      Config
-     * @param taskContext TaskContext
+     * @param config  Config
+     * @param kvStore Samza key-value store for storing the state
      */
     @Override
-    public void init(Config config, TaskContext taskContext) {
-        logger.info("Initialize PressingAnalysisTask");
+    public void createStateAbstractionsAndModuleGraphs(Config config, KeyValueStore<String, Serializable> kvStore) {
+        logger.info("Creating state abstractions and module graphs for PressingAnalysisTask");
         try {
             /*======================================================
-            === Read Parameters from config file                 ===
+            === Read parameters from config file                 ===
             ======================================================*/
             int activeTimeThreshold = config.getInt("streamTeam.activeTimeThreshold");
             double minPressingIndexForUnderPressure = config.getDouble("streamTeam.pressingAnalysis.minPressingIndexForUnderPressure");
@@ -85,10 +84,8 @@ public class PressingAnalysisTask extends AbstractTask {
             }
 
             /*======================================================
-            === Create Stores                                    ===
+            === Create state abstractions                        ===
             ======================================================*/
-            KeyValueStore<String, Serializable> kvStore = (KeyValueStore<String, Serializable>) taskContext.getStore("kvStore");
-
             SingleValueStore<Geometry.Vector> positionStore = new SingleValueStore<>(kvStore, "position", new Schema("arrayValue{objectIdentifiers,0,false}"));
             SingleValueStore<Double> velocityXStore = new SingleValueStore<>(kvStore, "velocityX", new Schema("arrayValue{objectIdentifiers,0,false}"));
             SingleValueStore<Double> velocityYStore = new SingleValueStore<>(kvStore, "velocityY", new Schema("arrayValue{objectIdentifiers,0,false}"));

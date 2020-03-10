@@ -28,8 +28,8 @@ rm -rf target/
 rm -rf deploy
 mvn clean package
 mkdir -p deploy
-tar -xf ./target/streamteam-data-stream-analysis-system-1.0.0-dist.tar.gz -C deploy
-./runHDFSFileUploader.sh 10.34.58.65:8020 target/streamteam-data-stream-analysis-system-1.0.0-dist.tar.gz input/streamteam-data-stream-analysis-system-1.0.0-dist.tar.gz
+tar -xf ./target/streamteam-data-stream-analysis-system-1.0.1-dist.tar.gz -C deploy
+./runHDFSFileUploader.sh 10.34.58.65:8020 target/streamteam-data-stream-analysis-system-1.0.1-dist.tar.gz input/streamteam-data-stream-analysis-system-1.0.1-dist.tar.gz
 deploy/bin/run-job.sh --config-factory=ch.unibas.dmi.dbis.streamTeam.samzaExtensions.StreamTeamConfigFactory --config-path=file://$PWD/deploy/config/football/FieldObjectStateGenerationTask.properties
 deploy/bin/run-job.sh --config-factory=ch.unibas.dmi.dbis.streamTeam.samzaExtensions.StreamTeamConfigFactory --config-path=file://$PWD/deploy/config/football/KickoffDetectionTask.properties
 deploy/bin/run-job.sh --config-factory=ch.unibas.dmi.dbis.streamTeam.samzaExtensions.StreamTeamConfigFactory --config-path=file://$PWD/deploy/config/football/TimeTask.properties
