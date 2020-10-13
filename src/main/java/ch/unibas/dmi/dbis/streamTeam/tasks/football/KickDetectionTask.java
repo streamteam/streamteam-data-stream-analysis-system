@@ -42,7 +42,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Task that consumes fieldObjectState, matchMetadata, ballPossessionChangeEvent, kickoffEvent, areaEvent, and duelEvent and generates kickEvent.
+ * StreamTask that specifies the analysis logic of the Kick Detection Worker.
+ * Consumes fieldObjectState, matchMetadata, ballPossessionChangeEvent, kickoffEvent, areaEvent, and duelEvent and generates kickEvent.
  * Generates a kickEvent for every detected kick.
  */
 public class KickDetectionTask extends AbstractTask {
@@ -53,14 +54,14 @@ public class KickDetectionTask extends AbstractTask {
     private final static Logger logger = LoggerFactory.getLogger(KickDetectionTask.class);
 
     /**
-     * Creates state abstractions and module graphs for KickDetectionTask.
+     * Creates state abstractions and module graphs of the Kick Detection Worker.
      *
      * @param config  Config
      * @param kvStore Samza key-value store for storing the state
      */
     @Override
     public void createStateAbstractionsAndModuleGraphs(Config config, KeyValueStore<String, Serializable> kvStore) {
-        logger.info("Creating state abstractions and module graphs for KickDetectionTask");
+        logger.info("Creating state abstractions and module graphs of the Kick Detection Worker.");
         try {
             /*======================================================
             === Read parameters from config file                 ===

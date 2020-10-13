@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" ?>
 <!--
   ~ StreamTeam
   ~ Copyright (C) 2019  University of Basel
@@ -16,20 +17,20 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<!-- Based on https://wiki.apache.org/logging-log4j/Log4jXmlFormat -->
+<!-- Copied from https://github.com/apache/samza-hello-samza/blob/d962f503b2e5c1c1832cbb8eb51c0914d7034149/src/test/resources/log4j2-test.xml (published under the Apache License) -->
 
-<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
-<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
-    <appender name="console" class="org.apache.log4j.ConsoleAppender">
-        <param name="Target" value="System.out"/>
-        <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} [%p] %m%n"/>
-        </layout>
-    </appender>
+<!-- this is needed to avoid using src/main/resources/log4j2.xml for tests -->
 
-    <root>
-        <priority value="warn"/>
-        <appender-ref ref="console"/>
-    </root>
+<Configuration>
+    <Appenders>
+        <Console name="STDOUT" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} [%p] %m%n"/>
+        </Console>
+    </Appenders>
 
-</log4j:configuration>
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="STDOUT"/>
+        </Root>
+    </Loggers>
+</Configuration>

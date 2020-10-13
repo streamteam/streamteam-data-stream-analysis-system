@@ -47,7 +47,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Task that consumes fieldObjectState and generates pressingState and underPressureEvents.
+ * StreamTask that specifies the analysis logic of the Pressing Analysis Worker.
+ * Consumes fieldObjectState and generates pressingState and underPressureEvents.
  * Generates underPressureEvents while the player in ball possession is under high pressure.
  * Moreover, generates pressingState in every window() call.
  */
@@ -59,14 +60,14 @@ public class PressingAnalysisTask extends AbstractTask {
     private final static Logger logger = LoggerFactory.getLogger(PressingAnalysisTask.class);
 
     /**
-     * Creates state abstractions and module graphs for PressingAnalysisTask.
+     * Creates state abstractions and module graphs of the Pressing Analysis Worker.
      *
      * @param config  Config
      * @param kvStore Samza key-value store for storing the state
      */
     @Override
     public void createStateAbstractionsAndModuleGraphs(Config config, KeyValueStore<String, Serializable> kvStore) {
-        logger.info("Creating state abstractions and module graphs for PressingAnalysisTask");
+        logger.info("Creating state abstractions and module graphs of the Pressing Analysis Worker.");
         try {
             /*======================================================
             === Read parameters from config file                 ===

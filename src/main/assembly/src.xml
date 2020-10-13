@@ -55,7 +55,7 @@
     </fileSets>
     <files>
         <file>
-            <source>${basedir}/src/main/resources/log4j.xml</source>
+            <source>${basedir}/src/main/resources/log4j2.xml</source>
             <outputDirectory>lib</outputDirectory>
         </file>
     </files>
@@ -73,9 +73,9 @@
             <useTransitiveDependencies>true</useTransitiveDependencies>
             <!-- https://maven.apache.org/plugins/maven-assembly-plugin/examples/single/including-and-excluding-artifacts.html -->
             <excludes>
-                <exclude>org.apache.samza:samza-core_2.10</exclude>
-                <exclude>org.apache.samza:samza-kafka_2.10</exclude>
-                <exclude>org.apache.samza:samza-kv_2.10</exclude>
+                <exclude>org.apache.samza:samza-core_2.11</exclude>
+                <exclude>org.apache.samza:samza-kafka_2.11</exclude>
+                <exclude>org.apache.samza:samza-kv_2.11</exclude>
             </excludes>
         </dependencySet>
     </dependencySets>

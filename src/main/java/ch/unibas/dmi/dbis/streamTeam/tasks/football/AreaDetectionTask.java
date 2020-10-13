@@ -38,7 +38,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Task that consumes fieldObjectState and matchMetadata and generates areaEvent.
+ * StreamTask that specifies the analysis logic of the Area Detection Worker.
+ * Consumes fieldObjectState and matchMetadata and generates areaEvent.
  * Generates multiple area events as defined in the parameters of the task.
  */
 public class AreaDetectionTask extends AbstractTask {
@@ -49,14 +50,14 @@ public class AreaDetectionTask extends AbstractTask {
     private final static Logger logger = LoggerFactory.getLogger(AreaDetectionTask.class);
 
     /**
-     * Creates state abstractions and module graphs for AreaDetectionTask.
+     * Creates state abstractions and module graphs of the Area Detection Worker.
      *
      * @param config  Config
      * @param kvStore Samza key-value store for storing the state
      */
     @Override
     public void createStateAbstractionsAndModuleGraphs(Config config, KeyValueStore<String, Serializable> kvStore) {
-        logger.info("Creating state abstractions and module graphs for AreaDetectionTask");
+        logger.info("Creating state abstractions and module graphs of the Area Detection Worker.");
         try {
             /*======================================================
             === Read parameters from config file                 ===

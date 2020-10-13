@@ -25,6 +25,7 @@ import ch.unibas.dmi.dbis.streamTeam.modules.WindowProcessorGraph;
 import ch.unibas.dmi.dbis.streamTeam.samzaExtensions.KafkaMessageWithLogAppendTimestamp;
 import org.apache.samza.config.Config;
 import org.apache.samza.config.ConfigException;
+import org.apache.samza.context.Context;
 import org.apache.samza.storage.kv.KeyValueStore;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.system.OutgoingMessageEnvelope;
@@ -37,7 +38,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * Abstract class for a StreamTeam worker based on a Samza task.
+ * Abstract class for a StreamTask which specifies the analysis logic of a StreamTeam worker.
  */
 public abstract class AbstractTask implements StreamTask, InitableTask, WindowableTask {
 
@@ -64,14 +65,14 @@ public abstract class AbstractTask implements StreamTask, InitableTask, Windowab
     /**
      * Initializes the StreamTeam worker.
      *
-     * @param config      Config
-     * @param taskContext TaskContext
+     * @param context Context
      */
     @Override
-    public final void init(Config config, TaskContext taskContext) {
+    public final void init(Context context) {
+        Config config = context.getJobContext().getConfig();
         this.logProcessingTimestamps = config.getBoolean("streamTeam.logProcessingTimestamps");
 
-        KeyValueStore<String, Serializable> kvStore = (KeyValueStore<String, Serializable>) taskContext.getStore("kvStore");
+        KeyValueStore<String, Serializable> kvStore = (KeyValueStore<String, Serializable>) context.getTaskContext().getStore("kvStore");
 
         this.createStateAbstractionsAndModuleGraphs(config, kvStore);
     }

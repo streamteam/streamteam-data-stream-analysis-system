@@ -16,25 +16,29 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/* Copied from https://github.com/apache/samza/blob/0.13.1/samza-core/src/main/java/org/apache/samza/coordinator/stream/CoordinatorStreamSystemConsumer.java (published under the Apache License)
+/* Copied from https://github.com/apache/samza/blob/1.5.1/samza-core/src/main/java/org/apache/samza/coordinator/stream/CoordinatorStreamSystemConsumer.java (published under the Apache License)
  * Changes:
  * - Highlighted modifications in bootstrap method
+ * - Highlighted modifications in getUnreadMessages method
  * - Automatic code reformatting by IntelliJ
  */
 
 package org.apache.samza.coordinator.stream;
 
 import ch.unibas.dmi.dbis.streamTeam.samzaExtensions.KafkaMessageWithLogAppendTimestamp;
+import com.google.common.annotations.VisibleForTesting;
 import org.apache.samza.Partition;
 import org.apache.samza.SamzaException;
 import org.apache.samza.config.Config;
 import org.apache.samza.config.MapConfig;
 import org.apache.samza.coordinator.stream.messages.CoordinatorStreamMessage;
 import org.apache.samza.coordinator.stream.messages.SetConfig;
+import org.apache.samza.metrics.MetricsRegistry;
 import org.apache.samza.serializers.JsonSerde;
 import org.apache.samza.serializers.Serde;
 import org.apache.samza.system.*;
 import org.apache.samza.system.SystemStreamMetadata.SystemStreamPartitionMetadata;
+import org.apache.samza.util.CoordinatorStreamUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,18 +62,30 @@ public class CoordinatorStreamSystemConsumer {
     private final Object bootstrapLock = new Object();
     private volatile Set<CoordinatorStreamMessage> bootstrappedStreamSet = Collections.emptySet();
 
-    public CoordinatorStreamSystemConsumer(SystemStream coordinatorSystemStream, SystemConsumer systemConsumer, SystemAdmin systemAdmin, Serde<List<?>> keySerde, Serde<Map<String, Object>> messageSerde) {
+    public CoordinatorStreamSystemConsumer(Config config, MetricsRegistry registry) {
+        SystemStream coordinatorSystemStream = CoordinatorStreamUtil.getCoordinatorSystemStream(config);
+        SystemFactory systemFactory = CoordinatorStreamUtil.getCoordinatorSystemFactory(config);
+        SystemAdmin systemAdmin = systemFactory.getAdmin(coordinatorSystemStream.getSystem(), config);
+        SystemConsumer systemConsumer = systemFactory.getConsumer(coordinatorSystemStream.getSystem(), config, registry);
+
         this.coordinatorSystemStreamPartition = new SystemStreamPartition(coordinatorSystemStream, new Partition(0));
         this.systemConsumer = systemConsumer;
         this.systemAdmin = systemAdmin;
-        this.configMap = new HashMap();
+        this.configMap = new HashMap<>();
         this.isBootstrapped = false;
-        this.keySerde = keySerde;
-        this.messageSerde = messageSerde;
+        this.keySerde = new JsonSerde<>();
+        this.messageSerde = new JsonSerde<>();
     }
 
+    // Used only for test
     public CoordinatorStreamSystemConsumer(SystemStream coordinatorSystemStream, SystemConsumer systemConsumer, SystemAdmin systemAdmin) {
-        this(coordinatorSystemStream, systemConsumer, systemAdmin, new JsonSerde<List<?>>(), new JsonSerde<Map<String, Object>>());
+        this.coordinatorSystemStreamPartition = new SystemStreamPartition(coordinatorSystemStream, new Partition(0));
+        this.systemConsumer = systemConsumer;
+        this.systemAdmin = systemAdmin;
+        this.configMap = new HashMap<>();
+        this.isBootstrapped = false;
+        this.keySerde = new JsonSerde<>();
+        this.messageSerde = new JsonSerde<>();
     }
 
     /**
@@ -119,6 +135,7 @@ public class CoordinatorStreamSystemConsumer {
         }
         log.info("Starting coordinator stream system consumer.");
         this.systemConsumer.start();
+        this.systemAdmin.start();
         this.isStarted = true;
     }
 
@@ -128,6 +145,7 @@ public class CoordinatorStreamSystemConsumer {
     public void stop() {
         log.info("Stopping coordinator stream system consumer.");
         this.systemConsumer.stop();
+        this.systemAdmin.stop();
         this.isStarted = false;
     }
 
@@ -153,7 +171,9 @@ public class CoordinatorStreamSystemConsumer {
                         // === START MODIFICATION FOR STREAMTEAM PROJECT ===
                         if (envelope.getMessage() instanceof KafkaMessageWithLogAppendTimestamp) {
                             KafkaMessageWithLogAppendTimestamp kafkaMessageWithLogAppendTimestamp = (KafkaMessageWithLogAppendTimestamp) envelope.getMessage();
-                            valueMap = this.messageSerde.fromBytes((byte[]) kafkaMessageWithLogAppendTimestamp.getMessage());
+                            if (kafkaMessageWithLogAppendTimestamp.getMessage() != null) {
+                                valueMap = this.messageSerde.fromBytes((byte[]) kafkaMessageWithLogAppendTimestamp.getMessage());
+                            }
                         } else {
                             valueMap = this.messageSerde.fromBytes((byte[]) envelope.getMessage());
                         }
@@ -186,13 +206,12 @@ public class CoordinatorStreamSystemConsumer {
         }
     }
 
-    public Set<CoordinatorStreamMessage> getBoostrappedStream() {
-        log.info("Returning the bootstrapped data from the stream");
-        if (!this.isBootstrapped)
-            bootstrap();
-        return this.bootstrappedStreamSet;
-    }
-
+    /**
+     * Returns the set of bootstrapped {@link CoordinatorStreamMessage}s
+     *
+     * @param type The type of {@link CoordinatorStreamMessage}s to return.
+     * @return The bootstrapped {@link CoordinatorStreamMessage}s
+     */
     public Set<CoordinatorStreamMessage> getBootstrappedStream(String type) {
         log.debug("Bootstrapping coordinator stream for messages of type {}", type);
         bootstrap();
@@ -252,7 +271,16 @@ public class CoordinatorStreamSystemConsumer {
             Object[] keyArray = this.keySerde.fromBytes((byte[]) envelope.getKey()).toArray();
             Map<String, Object> valueMap = null;
             if (envelope.getMessage() != null) {
-                valueMap = this.messageSerde.fromBytes((byte[]) envelope.getMessage());
+                // === START MODIFICATION FOR STREAMTEAM PROJECT ===
+                if (envelope.getMessage() instanceof KafkaMessageWithLogAppendTimestamp) {
+                    KafkaMessageWithLogAppendTimestamp kafkaMessageWithLogAppendTimestamp = (KafkaMessageWithLogAppendTimestamp) envelope.getMessage();
+                    if (kafkaMessageWithLogAppendTimestamp.getMessage() != null) {
+                        valueMap = this.messageSerde.fromBytes((byte[]) kafkaMessageWithLogAppendTimestamp.getMessage());
+                    }
+                } else {
+                    valueMap = this.messageSerde.fromBytes((byte[]) envelope.getMessage());
+                }
+                // === END MODIFICATION FOR STREAMTEAM PROJECT ===
             }
             CoordinatorStreamMessage coordinatorStreamMessage = new CoordinatorStreamMessage(keyArray, valueMap);
             if (type == null || type.equals(coordinatorStreamMessage.getType())) {
@@ -275,4 +303,8 @@ public class CoordinatorStreamSystemConsumer {
         return iterator.hasNext();
     }
 
+    @VisibleForTesting
+    boolean isStarted() {
+        return this.isStarted;
+    }
 }

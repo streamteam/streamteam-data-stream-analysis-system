@@ -46,7 +46,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Task that consumes fieldObjectState and matchMetadata and generates heatmapStatistics.
+ * StreamTask that specifies the analysis logic of the Heatmap Worker.
+ * Consumes fieldObjectState and matchMetadata and generates heatmapStatistics.
  * Generates a heatmapStatistics stream element every second for every player/team-interval-combination.
  */
 public class HeatmapTask extends AbstractTask {
@@ -57,14 +58,14 @@ public class HeatmapTask extends AbstractTask {
     private final static Logger logger = LoggerFactory.getLogger(HeatmapTask.class);
 
     /**
-     * Creates state abstractions and module graphs for HeatmapTask.
+     * Creates state abstractions and module graphs of the Heatmap Worker.
      *
      * @param config  Config
      * @param kvStore Samza key-value store for storing the state
      */
     @Override
     public void createStateAbstractionsAndModuleGraphs(Config config, KeyValueStore<String, Serializable> kvStore) {
-        logger.info("Creating state abstractions and module graphs for HeatmapTask");
+        logger.info("Creating state abstractions and module graphs of the Heatmap Worker.");
         try {
             /*======================================================
             === Read parameters from config file                 ===

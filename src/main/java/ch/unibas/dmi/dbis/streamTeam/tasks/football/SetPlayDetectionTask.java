@@ -42,7 +42,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Task that consumes fieldObjectState, kickoffEvent, and areaEvent and generates freekickEvent, penaltyEvent, cornerkickEvent, throwinEvent, goalkickEvent, and setPlayStatistics.
+ * StreamTask that specifies the analysis logic of the Set Play Detection Worker.
+ * Consumes fieldObjectState, kickoffEvent, and areaEvent and generates freekickEvent, penaltyEvent, cornerkickEvent, throwinEvent, goalkickEvent, and setPlayStatistics.
  * Generates a freekickEvent stream element for every detected free kick.
  * Generates a cornerkickEvent stream element for every detected corner kick.
  * Generates a goalkickEvent stream element for every detected goal kick.
@@ -58,14 +59,14 @@ public class SetPlayDetectionTask extends AbstractTask {
     private final static Logger logger = LoggerFactory.getLogger(SetPlayDetectionTask.class);
 
     /**
-     * Creates state abstractions and module graphs for SetPlayDetectionTask.
+     * Creates state abstractions and module graphs of the Set Play Detection Worker.
      *
      * @param config  Config
      * @param kvStore Samza key-value store for storing the state
      */
     @Override
     public void createStateAbstractionsAndModuleGraphs(Config config, KeyValueStore<String, Serializable> kvStore) {
-        logger.info("Creating state abstractions and module graphs for SetPlayDetectionTask");
+        logger.info("Creating state abstractions and module graphs of the Set Play Detection Worker.");
         try {
             /*======================================================
             === Read parameters from config file                 ===

@@ -48,7 +48,8 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Task that consumes kickEvent, kickoffEvent, ballPossessionChangeEvent, and areaEvent and generates successfulPassEvent, interceptionEvent, misplacedPassEvent, clearanceEvent, goalEvent, shotOffTargetEvent, passStatistics, and shotStatistics.
+ * StreamTask that specifies the analysis logic of the Pass and Shot Detection Worker.
+ * Consumes kickEvent, kickoffEvent, ballPossessionChangeEvent, and areaEvent and generates successfulPassEvent, interceptionEvent, misplacedPassEvent, clearanceEvent, goalEvent, shotOffTargetEvent, passStatistics, and shotStatistics.
  * Generates a successfulPassEvent for every detected successful pass.
  * Generates an interceptionEvent for every detected interception.
  * Generates a misplacedPassEvent for every detected misplaced pass.
@@ -66,14 +67,14 @@ public class PassAndShotDetectionTask extends AbstractTask {
     private final static Logger logger = LoggerFactory.getLogger(PassAndShotDetectionTask.class);
 
     /**
-     * Creates state abstractions and module graphs for PassAndShotDetectionTask.
+     * Creates state abstractions and module graphs of the Pass and Shot Detection Worker.
      *
      * @param config  Config
      * @param kvStore Samza key-value store for storing the state
      */
     @Override
     public void createStateAbstractionsAndModuleGraphs(Config config, KeyValueStore<String, Serializable> kvStore) {
-        logger.info("Creating state abstractions and module graphs for PassAndShotDetectionTask");
+        logger.info("Creating state abstractions and module graphs of the Pass and Shot Detection Worker.");
         try {
             /*======================================================
             === Read parameters from config file                 ===

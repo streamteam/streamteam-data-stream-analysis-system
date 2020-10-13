@@ -40,7 +40,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Task that consumes successfulPassEvent, misplacedPassEvent, clearanceEvent, and interceptionEvent and that generates passSequenceEvent, doublePassEvent, and passSequenceStatistics.
+ * StreamTask that specifies the analysis logic of the Pass Combination Detection Worker.
+ * Consumes successfulPassEvent, misplacedPassEvent, clearanceEvent, and interceptionEvent and that generates passSequenceEvent, doublePassEvent, and passSequenceStatistics.
  * Generates a passSequenceEvent when there is an uninterrupted sequence of successful passes (min 2) and a doublePassEvent when there is an uninterrupted double pass.
  * Each doublePassEvent is also a passSequenceEvent.
  * Moreover, generates passSequenceStatistics when a pass sequence is detected.
@@ -54,14 +55,14 @@ public class PassCombinationDetectionTask extends AbstractTask {
 
 
     /**
-     * Creates state abstractions and module graphs for PassCombinationDetectionTask.
+     * Creates state abstractions and module graphs of the Pass Combination Detection Worker.
      *
      * @param config  Config
      * @param kvStore Samza key-value store for storing the state
      */
     @Override
     public void createStateAbstractionsAndModuleGraphs(Config config, KeyValueStore<String, Serializable> kvStore) {
-        logger.info("Creating state abstractions and module graphs for PassCombinationDetectionTask");
+        logger.info("Creating state abstractions and module graphs of the Pass Combination Detection Worker.");
         try {
             /*======================================================
             === Read parameters from config file                 ===

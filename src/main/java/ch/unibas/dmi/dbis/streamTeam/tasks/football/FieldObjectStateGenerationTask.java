@@ -40,7 +40,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Task that consumes rawPositionSensorData and generates fieldObjectState.
+ * StreamTask that specifies the analysis logic of the Field Object State Generation Worker.
+ * Consumes rawPositionSensorData and generates fieldObjectState.
  * Generates a single fieldObjectState stream element for every rawPositionSensorData stream element.
  */
 public class FieldObjectStateGenerationTask extends AbstractTask {
@@ -51,14 +52,14 @@ public class FieldObjectStateGenerationTask extends AbstractTask {
     private final static Logger logger = LoggerFactory.getLogger(FieldObjectStateGenerationTask.class);
 
     /**
-     * Creates state abstractions and module graphs for FieldObjectStateGenerationTask.
+     * Creates state abstractions and module graphs of the Field Object State Generation Worker.
      *
      * @param config  Config
      * @param kvStore Samza key-value store for storing the state
      */
     @Override
     public void createStateAbstractionsAndModuleGraphs(Config config, KeyValueStore<String, Serializable> kvStore) {
-        logger.info("Creating state abstractions and module graphs for FieldObjectStateGenerationTask");
+        logger.info("Creating state abstractions and module graphs of the Field Object State Generation Worker.");
         try {
             /*======================================================
             === Read parameters from config file                 ===

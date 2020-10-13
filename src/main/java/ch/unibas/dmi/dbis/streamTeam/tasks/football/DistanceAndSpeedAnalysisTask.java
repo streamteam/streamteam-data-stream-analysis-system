@@ -50,7 +50,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Task that consumes fieldObjectState and generates speedLevelChangeEvents, speedLevelStatistics, dribblingEvents, dribblingStatistics, and distanceStatistics.
+ * StreamTask that specifies the analysis logic of the Distance and Speed Analysis Worker.
+ * Consumes fieldObjectState and generates speedLevelChangeEvents, speedLevelStatistics, dribblingEvents, dribblingStatistics, and distanceStatistics.
  * Generates a speedLevelChangeEvent when a player transits to another speed level and dribblingEvents during a dribbling actions.
  * Moreover, generates a distanceStatistics in every window() call, a speedLevelStatistics whenever the speed level changes and a dribblingStatistics whenever a dribbling action finishes.
  */
@@ -62,14 +63,14 @@ public class DistanceAndSpeedAnalysisTask extends AbstractTask {
     private final static Logger logger = LoggerFactory.getLogger(DistanceAndSpeedAnalysisTask.class);
 
     /**
-     * Creates state abstractions and module graphs for DistanceAndSpeedAnalysisTask.
+     * Creates state abstractions and module graphs of the Distance and Speed Analysis Worker.
      *
      * @param config  Config
      * @param kvStore Samza key-value store for storing the state
      */
     @Override
     public void createStateAbstractionsAndModuleGraphs(Config config, KeyValueStore<String, Serializable> kvStore) {
-        logger.info("Creating state abstractions and module graphs for DistanceAndSpeedAnalysisTask");
+        logger.info("Creating state abstractions and module graphs of the Distance and Speed Analysis Worker.");
         try {
             /*======================================================
             === Read parameters from config file                 ===

@@ -9,3 +9,6 @@
 deploy/*
 target/*
 log/*
+
+*manifest.txt
+*pathing.jar

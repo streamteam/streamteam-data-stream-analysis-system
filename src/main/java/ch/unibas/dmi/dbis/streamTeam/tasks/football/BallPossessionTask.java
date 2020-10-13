@@ -48,7 +48,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Task that consumes fieldObjectState, matchMetadata, kickoffEvent, and areaEvent and generates ballPossessionChangeEvent, duelEvent, and ballPossessionStatistics.
+ * StreamTask that specifies the analysis logic of the Ball Possession Worker.
+ * Consumes fieldObjectState, matchMetadata, kickoffEvent, and areaEvent and generates ballPossessionChangeEvent, duelEvent, and ballPossessionStatistics.
  * Generates a ballPossessionChangeEvent stream element for every change in ball possession and duelEvent stream elements during a duel action.
  * Moreover, periodically generates ballPossessionStatistics stream elements.
  */
@@ -60,14 +61,14 @@ public class BallPossessionTask extends AbstractTask {
     private final static Logger logger = LoggerFactory.getLogger(BallPossessionTask.class);
 
     /**
-     * Creates state abstractions and module graphs for BallPossessionTask.
+     * Creates state abstractions and module graphs of the  Ball Possession Worker.
      *
      * @param config  Config
      * @param kvStore Samza key-value store for storing the state
      */
     @Override
     public void createStateAbstractionsAndModuleGraphs(Config config, KeyValueStore<String, Serializable> kvStore) {
-        logger.info("Creating state abstractions and module graphs for BallPossessionTask");
+        logger.info("Creating state abstractions and module graphs of the Ball Possession Worker.");
         try {
             /*======================================================
             === Read parameters from config file                 ===

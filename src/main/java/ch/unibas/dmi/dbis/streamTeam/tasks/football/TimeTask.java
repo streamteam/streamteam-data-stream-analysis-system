@@ -39,7 +39,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Task that consumes fieldObjectState and kickoffEvent and generates matchTimeProgressEvent.
+ * StreamTask that specifies the analysis logic of the Time Worker.
+ * Consumes fieldObjectState and kickoffEvent and generates matchTimeProgressEvent.
  * Generates a matchTimeProgressEvent stream element every second after the first kickoff.
  */
 public class TimeTask extends AbstractTask {
@@ -50,14 +51,14 @@ public class TimeTask extends AbstractTask {
     private final static Logger logger = LoggerFactory.getLogger(TimeTask.class);
 
     /**
-     * Creates state abstractions and module graphs for TimeTask.
+     * Creates state abstractions and module graphs of the Time Worker.
      *
      * @param config  Config
      * @param kvStore Samza key-value store for storing the state
      */
     @Override
     public void createStateAbstractionsAndModuleGraphs(Config config, KeyValueStore<String, Serializable> kvStore) {
-        logger.info("Creating state abstractions and module graphs for TimeTask");
+        logger.info("Creating state abstractions and module graphs of the Time Worker.");
         try {
             /*======================================================
             === Read parameters from config file                 ===

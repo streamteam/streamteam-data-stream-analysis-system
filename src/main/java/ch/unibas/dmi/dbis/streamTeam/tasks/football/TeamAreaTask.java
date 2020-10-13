@@ -40,7 +40,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Task that consumes fieldObjectState and generates teamAreaState.
+ * StreamTask that specifies the analysis logic of the Team Area Worker.
+ * Consumes fieldObjectState and generates teamAreaState.
  * Generates a teamAreaState stream element whenever a fieldObjectState stream element updates an area defined by the players of a team.
  */
 public class TeamAreaTask extends AbstractTask {
@@ -51,14 +52,14 @@ public class TeamAreaTask extends AbstractTask {
     private final static Logger logger = LoggerFactory.getLogger(TeamAreaTask.class);
 
     /**
-     * Creates state abstractions and module graphs for TeamAreaTask.
+     * Creates state abstractions and module graphs of the Team Area Worker.
      *
      * @param config  Config
      * @param kvStore Samza key-value store for storing the state
      */
     @Override
     public void createStateAbstractionsAndModuleGraphs(Config config, KeyValueStore<String, Serializable> kvStore) {
-        logger.info("Creating state abstractions and module graphs for TeamAreaTask");
+        logger.info("Creating state abstractions and module graphs of the Team Area Worker.");
         try {
             /*======================================================
             === Read parameters from config file                 ===

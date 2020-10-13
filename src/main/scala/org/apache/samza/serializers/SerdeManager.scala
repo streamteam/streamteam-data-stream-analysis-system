@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/* Copied from https://github.com/apache/samza/blob/0.13.1/samza-core/src/main/scala/org/apache/samza/serializers/SerdeManager.scala (published under the Apache License)
+/* Copied from https://github.com/apache/samza/blob/1.5.1/samza-core/src/main/scala/org/apache/samza/serializers/SerdeManager.scala (published under the Apache License)
  * Changes:
  * - Highlighted modifications in fromBytes method
  * - Automatic code reformatting by IntelliJ
@@ -27,8 +27,7 @@ package org.apache.samza.serializers
 import ch.unibas.dmi.dbis.streamTeam.samzaExtensions.KafkaMessageWithLogAppendTimestamp
 import org.apache.samza.SamzaException
 import org.apache.samza.config.StorageConfig
-import org.apache.samza.message.ControlMessage
-import org.apache.samza.system.{IncomingMessageEnvelope, OutgoingMessageEnvelope, SystemStream}
+import org.apache.samza.system.{ControlMessage, IncomingMessageEnvelope, OutgoingMessageEnvelope, SystemStream}
 
 class SerdeManager(
                     serdes: Map[String, Serde[Object]] = Map(),
@@ -166,7 +165,10 @@ class SerdeManager(
         envelope.getSystemStreamPartition,
         envelope.getOffset,
         key,
-        message)
+        message,
+        envelope.getSize,
+        envelope.getEventTime(),
+        envelope.getArrivalTime)
     }
   }
 }

@@ -43,7 +43,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Task that consumes fieldObjectState, ballPossessionChangeEvent, and kickoffEvent and generates offsideLineState.
+ * StreamTask that specifies the analysis logic of the Offside Worker.
+ * Consumes fieldObjectState, ballPossessionChangeEvent, and kickoffEvent and generates offsideLineState.
  * Generates an offsideLineState stream element for every fieldObjectState stream element of the player in ball possession.
  */
 public class OffsideTask extends AbstractTask {
@@ -54,14 +55,14 @@ public class OffsideTask extends AbstractTask {
     private final static Logger logger = LoggerFactory.getLogger(OffsideTask.class);
 
     /**
-     * Creates state abstractions and module graphs for OffsideTask.
+     * Creates state abstractions and module graphs of the Offside Worker.
      *
      * @param config  Config
      * @param kvStore Samza key-value store for storing the state
      */
     @Override
     public void createStateAbstractionsAndModuleGraphs(Config config, KeyValueStore<String, Serializable> kvStore) {
-        logger.info("Creating state abstractions and module graphs for OffsideTask");
+        logger.info("Creating state abstractions and module graphs of the Offside Worker.");
         try {
             /*======================================================
             === Read parameters from config file                 ===

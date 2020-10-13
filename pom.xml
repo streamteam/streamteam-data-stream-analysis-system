@@ -25,7 +25,7 @@
     <groupId>ch.unibas.dmi.dbis</groupId>
     <artifactId>streamteam-data-stream-analysis-system</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.1</version>
+    <version>1.1.0</version>
 
     <name>StreamTeam - Data Stream Analysis System</name>
     <url>https://dbis.dmi.unibas.ch/research/projects/streamTeam/</url>
@@ -46,18 +46,22 @@
             <groupId>org.apache.samza</groupId>
             <artifactId>samza-core_${scala.version}</artifactId>
             <version>${samza.version}</version>
+            <!-- Prevent old log4j bindings (see http://www.slf4j.org/codes.html#multiple_bindings) -->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.samza</groupId>
-            <artifactId>samza-log4j</artifactId>
+            <artifactId>samza-log4j2_${scala.version}</artifactId>
             <version>${samza.version}</version>
-            <!-- https://maven.apache.org/guides/introduction/introduction-to-optional-and-excludes-dependencies.html -->
-            <exclusions>
-                <exclusion>  <!-- declare the exclusion here -->
-                    <groupId>org.apache.samza</groupId>
-                    <artifactId>samza-core_2.12</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.samza</groupId>
@@ -72,6 +76,17 @@
             <artifactId>samza-yarn_${scala.version}</artifactId>
             <version>${samza.version}</version>
             <scope>runtime</scope>
+            <!-- Prevent old log4j bindings (see http://www.slf4j.org/codes.html#multiple_bindings) -->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.samza</groupId>
@@ -86,19 +101,35 @@
         </dependency>
         <dependency>
             <groupId>org.apache.samza</groupId>
-            <artifactId>samza-kv-inmemory_${scala.version}</artifactId>
-            <version>${samza.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.samza</groupId>
             <artifactId>samza-kafka_${scala.version}</artifactId>
             <version>${samza.version}</version>
+            <!-- Prevent old log4j bindings (see http://www.slf4j.org/codes.html#multiple_bindings) -->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka_${scala.version}</artifactId>
             <version>${kafka.version}</version>
+            <!-- Prevent old log4j bindings (see http://www.slf4j.org/codes.html#multiple_bindings) -->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -106,52 +137,119 @@
             <version>${slf4j.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>${slf4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-jaxrs</artifactId>
-            <version>1.9.13</version>
-        </dependency>
-        <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-annotations</artifactId>
             <version>${hadoop.version}</version>
+            <!-- Prevent old log4j bindings (see http://www.slf4j.org/codes.html#multiple_bindings) -->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-auth</artifactId>
             <version>${hadoop.version}</version>
+            <!-- Prevent old log4j bindings (see http://www.slf4j.org/codes.html#multiple_bindings) -->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-common</artifactId>
             <version>${hadoop.version}</version>
+            <!-- Prevent old log4j bindings (see http://www.slf4j.org/codes.html#multiple_bindings) -->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-hdfs</artifactId>
             <version>${hadoop.version}</version>
+            <!-- Prevent old log4j bindings (see http://www.slf4j.org/codes.html#multiple_bindings) -->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-yarn-api</artifactId>
             <version>${hadoop.version}</version>
+            <!-- Prevent old log4j bindings (see http://www.slf4j.org/codes.html#multiple_bindings) -->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-yarn-client</artifactId>
             <version>${hadoop.version}</version>
+            <!-- Prevent old log4j bindings (see http://www.slf4j.org/codes.html#multiple_bindings) -->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-yarn-common</artifactId>
             <version>${hadoop.version}</version>
+            <!-- Prevent old log4j bindings (see http://www.slf4j.org/codes.html#multiple_bindings) -->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
-            <groupId>com.github.mdr</groupId>
+            <groupId>com.github.mutcianm</groupId>
             <artifactId>ascii-graphs_${scala.version}</artifactId>
             <version>${asciigraphs.version}</version>
         </dependency>
@@ -173,21 +271,21 @@
         <dependency>
             <groupId>ch.unibas.dmi.dbis</groupId>
             <artifactId>streamteam-data-model</artifactId>
-            <version>1.0.1</version>
+            <version>1.1.0</version>
         </dependency>
     </dependencies>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <samza.version>0.13.1</samza.version>
-        <hadoop.version>2.6.5</hadoop.version>
-        <kafka.version>0.10.1.1</kafka.version>
-        <slf4j.version>1.6.2</slf4j.version>
+        <samza.version>1.5.1</samza.version>
+        <hadoop.version>2.7.7</hadoop.version>
+        <kafka.version>2.0.1</kafka.version>
+        <slf4j.version>1.7.30</slf4j.version>
         <junit.version>4.12</junit.version>
         <asciigraphs.version>0.0.6</asciigraphs.version>
-        <protobuf.version>3.9.0</protobuf.version>
-        <scala.version>2.10</scala.version>
-        <scala.fullversion>2.10.4</scala.fullversion>
+        <protobuf.version>3.13.0</protobuf.version>
+        <scala.version>2.11</scala.version>
+        <scala.fullversion>2.11.8</scala.fullversion>
         <javatuples.version>1.2</javatuples.version>
         <tektosyne.version>6.2.0</tektosyne.version>
     </properties>
@@ -223,7 +321,7 @@
             <plugin>
                 <groupId>net.alchim31.maven</groupId>
                 <artifactId>scala-maven-plugin</artifactId>
-                <version>3.1.6</version>
+                <version>4.4.0</version>
                 <!--
                   The scala plugin detects the version of the scala library in the dependents and
                   uses that version to compile the scala code
@@ -306,7 +404,9 @@
                                     <overWrite>true</overWrite>
                                     <outputDirectory>${project.build.directory}/classes</outputDirectory>
                                     <excludes>
+                                        **/ApplicationRunnerMain.class
                                         **/CoordinatorStreamSystemConsumer.class
+                                        **/CoordinatorStreamStore.class
                                         **/SerdeManager.class
                                     </excludes>
                                 </artifactItem>
@@ -318,7 +418,7 @@
                                     <overWrite>true</overWrite>
                                     <outputDirectory>${project.build.directory}/classes</outputDirectory>
                                     <excludes>
-                                        **/KafkaSystemConsumer.class
+                                        **/KafkaConsumerProxy.class
                                     </excludes>
                                 </artifactItem>
                                 <artifactItem>

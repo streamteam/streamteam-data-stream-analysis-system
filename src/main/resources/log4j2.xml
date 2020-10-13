@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ StreamTeam
+  ~ Copyright (C) 2019  University of Basel
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<!-- Copied from https://github.com/apache/samza-hello-samza/blob/d962f503b2e5c1c1832cbb8eb51c0914d7034149/src/main/resources/log4j2.xml (published under the Apache License) -->
+
+<Configuration>
+    <Appenders>
+        <RollingFile name="RollingFile" fileName="${sys:samza.log.dir}/${sys:samza.container.name}.log"
+                     filePattern="${sys:samza.log.dir}/${sys:samza.container.name}-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} [%p] %m%n"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="256MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="20"/>
+        </RollingFile>
+
+        <RollingFile name="StartupAppender" fileName="${sys:samza.log.dir}/${sys:samza.container.name}-startup.log"
+                     filePattern="${sys:samza.log.dir}/${sys:samza.container.name}-startup-%d{MM-dd-yyyy}-%i.log">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} [%p] %m%n"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="256MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="1"/>
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <Logger name="STARTUP_LOGGER" level="info" additivity="false">
+            <AppenderRef ref="StartupAppender"/>
+        </Logger>
+        <Root level="info">
+            <AppenderRef ref="RollingFile"/>
+        </Root>
+    </Loggers>
+</Configuration>
