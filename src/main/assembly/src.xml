@@ -52,6 +52,14 @@
             </includes>
             <outputDirectory>config</outputDirectory>
         </fileSet>
+        <fileSet>
+            <directory>${basedir}/src/main/resources/models</directory>
+            <includes>
+                <include>*</include>
+                <include>*/*</include>
+            </includes>
+            <outputDirectory>models</outputDirectory>
+        </fileSet>
     </fileSets>
     <files>
         <file>

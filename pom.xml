@@ -25,7 +25,7 @@
     <groupId>ch.unibas.dmi.dbis</groupId>
     <artifactId>streamteam-data-stream-analysis-system</artifactId>
     <packaging>jar</packaging>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
 
     <name>StreamTeam - Data Stream Analysis System</name>
     <url>https://dbis.dmi.unibas.ch/research/projects/streamTeam/</url>
@@ -269,9 +269,24 @@
             <version>${tektosyne.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.deeplearning4j</groupId>
+            <artifactId>deeplearning4j-core</artifactId>
+            <version>${dl4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.deeplearning4j</groupId>
+            <artifactId>deeplearning4j-modelimport</artifactId>
+            <version>${dl4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.nd4j</groupId>
+            <artifactId>nd4j-native-platform</artifactId>
+            <version>${nd4j.version}</version>
+        </dependency>
+        <dependency>
             <groupId>ch.unibas.dmi.dbis</groupId>
             <artifactId>streamteam-data-model</artifactId>
-            <version>1.1.0</version>
+            <version>1.2.0</version>
         </dependency>
     </dependencies>
 
@@ -281,13 +296,15 @@
         <hadoop.version>2.7.7</hadoop.version>
         <kafka.version>2.0.1</kafka.version>
         <slf4j.version>1.7.30</slf4j.version>
-        <junit.version>4.12</junit.version>
+        <junit.version>4.13.1</junit.version>
         <asciigraphs.version>0.0.6</asciigraphs.version>
         <protobuf.version>3.13.0</protobuf.version>
         <scala.version>2.11</scala.version>
         <scala.fullversion>2.11.8</scala.fullversion>
         <javatuples.version>1.2</javatuples.version>
         <tektosyne.version>6.2.0</tektosyne.version>
+        <dl4j.version>1.0.0-beta7</dl4j.version>
+        <nd4j.version>1.0.0-beta7</nd4j.version>
     </properties>
 
     <repositories>
