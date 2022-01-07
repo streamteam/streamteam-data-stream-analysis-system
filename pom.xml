@@ -298,7 +298,7 @@
         <slf4j.version>1.7.30</slf4j.version>
         <junit.version>4.13.1</junit.version>
         <asciigraphs.version>0.0.6</asciigraphs.version>
-        <protobuf.version>3.13.0</protobuf.version>
+        <protobuf.version>3.16.1</protobuf.version>
         <scala.version>2.11</scala.version>
         <scala.fullversion>2.11.8</scala.fullversion>
         <javatuples.version>1.2</javatuples.version>
